@@ -80,10 +80,10 @@ WSGI_APPLICATION = "ShelfPilot.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
+        'NAME': os.environ.get('db_name_wp0v'),
+        'USER': os.environ.get('db_name_wp0v_user'),
+        'PASSWORD': os.environ.get('lpQ8B6IhKmvkwJ3gBDALWqsUxxknFlQZ'),
+        'HOST': os.environ.get('dpg-ctta0qogph6c738h508g-a'),
         'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
