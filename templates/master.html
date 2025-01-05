@@ -1,0 +1,213 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8" data-bs-theme="dark">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ShelfPilot</title>
+
+        <!-- JQuery für AJAX -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
+
+        <!-- Satoshi CSS -->
+        <link rel="stylesheet" href="{% static 'css/satoshi.css' %}">
+        
+    </head>
+
+    <body>
+        <main>
+          <form method="post">
+            {% csrf_token %}
+          </form>
+          
+            <header class="p-3 mb-3 border-bottom">
+              <div class="container">
+                <!-- Flex-Container, Logo and Navbar Text in one Row -->
+                <div
+                  class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"
+                >
+                  <!-- UL with d-flex and align-items-center put Logo and Links in one Row -->
+                  <ul
+                    class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 d-flex align-items-center"
+                  >
+                    <!-- Logo as LI-Item -->
+                    <li class="nav-item me-5">
+                      <svg
+                        id="logo"
+                        data-name="logo"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 1591.87 304.15"
+                        fill="currentColor"
+                        style="height: 35px; width: auto;"
+                      >
+                      <g>
+                        <g>
+                          <path class="cls-2" d="M363.68,190.45c.3,12.9,9.9,21,26.7,21s26.4-6.9,26.4-17.7c0-7.5-3.9-12.9-17.1-15.9l-26.7-6.3c-26.7-6-39.6-18.6-39.6-42.3,0-29.1,24.6-46.5,58.8-46.5s55.8,19.2,56.1,48h-34.8c-.3-12.6-8.7-20.7-22.8-20.7s-22.8,6.6-22.8,17.7c0,8.4,6.6,13.8,19.2,16.8l26.7,6.3c24.9,5.7,37.5,17.1,37.5,39.9,0,30-25.5,48.6-62.1,48.6s-60.3-19.8-60.3-48.9h34.8Z"/>
+                          <path class="cls-2" d="M479.18,235.45V12.25h36.9v94.2c9.3-14.4,26.7-23.7,48-23.7,36.6,0,55.8,23.1,55.8,61.5v91.2h-36.6v-82.5c0-24.9-12.3-36.9-30.9-36.9-23.1,0-36.6,16.2-36.6,38.4v81h-36.6Z"/>
+                          <path class="cls-2" d="M647.18,161.35c0-46.5,30.3-78.6,73.8-78.6s72.6,29.7,72.6,75.9v11.1l-111.6.3c2.7,26.1,16.5,39.3,40.8,39.3,20.1,0,33.3-7.8,37.5-21.9h33.9c-6.3,32.4-33.3,51.9-72,51.9-44.1,0-75-32.1-75-78ZM682.88,146.65h74.4c0-20.4-14.1-33.9-36-33.9s-34.8,11.7-38.4,33.9Z"/>
+                          <path class="cls-2" d="M823.58,235.45V12.25h36.3v223.2h-36.3Z"/>
+                          <path class="cls-2" d="M904.88,87.25v-18c0-40.2,21.3-57,53.4-57,5.7,0,12.6.3,18.9,1.5v31.2h-12.9c-18.6,0-23.1,9.6-23.1,24.3v18h35.4v30.6h-35.4v117.6h-36.3v-117.6h-21.3v-30.6h21.3Z"/>
+                          <path class="cls-2" d="M1011.67,87.25h32.7l-1.2,22.2c12-16.8,28.5-26.1,50.4-26.1,35.1,0,60.3,27.3,60.3,66.9,0,51.9-33.3,88.8-78,88.8-22.2,0-41.7-10.8-49.2-27.3l-14.1,92.4h-35.1l34.2-216.9ZM1070.17,207.85c27,0,48.3-24.3,48.3-55.5,0-22.8-13.5-38.1-35.1-38.1-27.3,0-48.9,24.6-48.9,56.1,0,23.1,13.5,37.5,35.7,37.5Z"/>
+                          <path class="cls-2" d="M1193.77,87.25h35.1l-23.4,148.2h-35.1l23.4-148.2ZM1197.67,38.95c0-13.2,11.7-25.2,25.2-25.2,10.5,0,18.3,7.8,18.3,18.3,0,12.9-12,25.2-25.2,25.2-10.8,0-18.3-8.1-18.3-18.3Z"/>
+                          <path class="cls-2" d="M1243.87,235.45l35.1-223.2h35.4l-35.4,223.2h-35.1Z"/>
+                          <path class="cls-2" d="M1406.17,83.35c42.3,0,70.8,27,70.8,67.2,0,49.5-38.4,88.5-87,88.5-42.3,0-70.8-27-70.8-67.2,0-49.5,38.7-88.5,87-88.5ZM1392.07,207.85c27,0,48.9-24.3,48.9-54.6,0-23.7-14.1-39-36.6-39-27,0-49.2,24.3-49.2,54.9,0,23.4,14.1,38.7,36.9,38.7Z"/>
+                          <path class="cls-2" d="M1505.17,235.45l18.6-118.8h-28.2l4.8-29.4h28.2l7.2-45.9h35.1l-7.2,45.9h28.2l-4.8,29.4h-28.2l-18.6,118.8h-35.1Z"/>
+                        </g>
+                        <path class="cls-1" d="M275.92,52.49c5.06,2.02,8.38,6.92,8.39,12.37v153.91c0,5.45-3.33,10.35-8.39,12.37l-128.82,51.53c-3.18,1.27-6.72,1.27-9.9,0L8.37,231.14C3.31,229.11,0,224.21,0,218.77V64.85c0-5.45,3.31-10.34,8.37-12.37L132.25,2.93l.07-.02,4.87-1.95c3.18-1.28,6.73-1.28,9.92,0l4.87,1.95.07.02,123.87,49.56ZM251.5,61.85l-109.35,43.75L32.8,61.85l-15.03,6.02v7.11l115.5,46.2v140.77l8.88,3.55,8.88-3.55V121.2l115.5-46.2v-7.11l-15.03-6.02v-.02Z"/>
+                      </g>
+                      </svg>
+                    </li>
+                    
+                    <!-- NavBar Elements with if/else logic for only highlighting the active tab -->
+
+                    <li class="me-4">
+                      <a 
+                        href="{% url 'dashboard' %}"
+                        class="nav-link px-2
+                          {% if request.resolver_match.url_name == 'dashboard' %}
+                            link-secondary
+                          {% else %}
+                            link-body-emphasis
+                          {% endif %}"
+                      >
+                        Dashboard
+                      </a>
+                    </li>
+                    
+                    <li class="me-4">
+                      <a 
+                        href="{% url 'overview' %}"
+                        class="nav-link px-2
+                          {% if request.resolver_match.url_name == 'overview' %}
+                            link-secondary
+                          {% else %}
+                            link-body-emphasis
+                          {% endif %}"
+                      >
+                        Lagerübersicht
+                      </a>
+                    </li>
+                    
+                    <li class="me-4">
+                      <a 
+                        href="{% url 'orders' %}"
+                        class="nav-link px-2
+                          {% if request.resolver_match.url_name == 'orders' %}
+                            link-secondary
+                          {% else %}
+                            link-body-emphasis
+                          {% endif %}"
+                      >
+                        Aufträge
+                      </a>
+                    </li>
+                    
+                    <li class="me-4">
+                      <a 
+                        href="{% url 'strategies' %}"
+                        class="nav-link px-2
+                          {% if request.resolver_match.url_name == 'strategies' %}
+                            link-secondary
+                          {% else %}
+                            link-body-emphasis
+                          {% endif %}"
+                      >
+                        Strategien
+                      </a>
+                    </li>
+                    
+                    <li class="me-4">
+                      <a 
+                        href="{% url 'history' %}"
+                        class="nav-link px-2
+                          {% if request.resolver_match.url_name == 'history' %}
+                            link-secondary
+                          {% else %}
+                            link-body-emphasis
+                          {% endif %}"
+                      >
+                        Historie
+                      </a>
+                    </li>                                
+                  </ul>
+      
+                  <!-- Righthandside Links (Settings / Logout) -->
+                  <div class="text-end">
+                    <ul
+                      class="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0"
+                    >
+                      <!-- Settings, SVG instead of text -->
+                      <li>
+                        <a
+                          href="{% url 'settings' %}"
+                          class="nav-link px-3 link-body-emphasis"
+                          aria-label="Einstellungen"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="32"
+                            height="32"
+                            fill="currentColor"
+                            class="bi bi-gear-fill"
+                            viewBox="0 0 16 16"
+                          >
+                          <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                          </svg>
+                        </a>
+                      </li>
+      
+                      <!-- Logout: SVG instead of text -->
+                      <li>
+                        <a
+                          href="{% url 'login' %}"
+                          class="nav-link px-2 link-body-emphasis"
+                          aria-label="Ausloggen"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="32"
+                            height="32"
+                            fill="currentColor"
+                            class="bi bi-indent"
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M3 8a.5.5 0 0 1 .5-.5h6.793L8.146
+                                 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1
+                                 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293
+                                 8.5H3.5A.5.5 0 0 1 3 8"
+                            />
+                            <path
+                              fill-rule="evenodd"
+                              d="M12.5 4a.5.5 0 0
+                                 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0
+                                 1 .5-.5"
+                            />
+                          </svg>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </header>
+          </main>
+
+
+        <div class="container mt-5">  
+        {% block content %}
+
+            <!-- Außerhalb wird vererbt und innerhalb ist spezifisch je nach Seite-->
+
+        {% endblock %}
+        </div>
+
+      </body>
+
+</html>

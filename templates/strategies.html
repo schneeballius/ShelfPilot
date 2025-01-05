@@ -1,0 +1,81 @@
+{% extends "master.html" %}
+
+{% block content %}
+  <h3 class="fw-bold text-start mb-4">Strategien</h3>
+  
+  <div class="row">
+    <div class="col-md-auto">
+      <div class="bg-dark text-white p-3 rounded mb-3">
+        {% for strategy in strategies %}
+          <!-- d-flex, aber ohne justify-content-between -->
+          <div class="d-flex align-items-center mb-2">
+            <!-- Strategiename, mit kleinem rechten Abstand -->
+            <span class="fw-bold fs-5 me-2">{{ strategy.name }}</span>
+
+            {% if strategy.active %}
+              <span class="badge bg-success fs-5">Aktiv</span>
+            {% else %}
+              <span class="badge bg-danger fs-5">Inaktiv</span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+  <div class="bg-dark text-white p-3 rounded mb-3">
+    <h4 class="fw-bold text-start mb-4">Strategiesimulation </h4>
+      <form method="post" action="{% url 'strategySimulation' %}">
+        {% csrf_token %}
+    
+        {% for strategy in strategies %}
+        <div class="form-check form-switch mb-4">  
+          <input class="form-check-input bg-success border-success" type="checkbox" id="{{ strategy.id }}" name="strategies" value="{{ strategy.id }}">
+          <label for="{{ strategy.id }}" class="form-label d-block">
+            {{ strategy.name }}
+          </label>
+        </div>
+        {% endfor %}
+    
+        <button type="submit" class="btn btn-success p-2"> Simulieren </button>
+      </form>
+      </div>
+  </div>
+
+ 
+  {% if strategySimulations %}
+    {% for strategySimulation in strategySimulations %}
+      <div class="col-md-auto bg-dark text-white p-3 rounded mb-3">
+      <h4 class="fw-bold text-start mb-4">{{ strategySimulation.strategy.name }}</h4>
+      <p> Gesamtfahrten: {{ strategySimulation.tours }}</p>
+      <p> Gesamte Leerfahrten: {{ strategySimulation.empty_tours}} </p> <!-- Boolean Empty Attribut einer Tour einbauen-->
+      <p> Gesamtweg: {{ strategySimulation.distance }} </p>
+      <p> Gesamter Leerweg: {{ strategySimulation.empty_distance }} </p>
+      <p> Gesamte Zeit: {{ strategySimulation.time }} </p>
+      <p> Gesamte Leerzeit: {{ strategySimulation.empty_time }} </p> 
+      <!-- Alle davon auch pro Tag berechnen / angeben -->
+      <p> Effizienz Fahrten: {{ strategySimulation.tour_efficiency }} </p>
+      <p> Effizienz Weg: {{ strategySimulation.distance_efficiency }} </p>
+      <p> Effizienz Zeit: {{ strategySimulation.time_efficiency }} </p>
+      <p>Wartungen benötigt: {{ strategySimulation.maintenance }}</p>
+      </div>
+    {% endfor %}
+{% else %}
+      <div class="col-md-auto bg-dark text-white p-3 rounded mb-3">
+        <p>Keine Simulationen verfügbar</p>
+      </div>
+{% endif %}
+
+<!-- CSS für Farbanpassung bei An Grün / Aus Grau -->
+<style>
+  .form-check-input {
+    background-color: grey !important;
+    border-color: grey !important;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  .form-check-input:checked {
+    background-color: green !important;
+    border-color: green !important;
+  }
+</style>
+
+{% endblock %}

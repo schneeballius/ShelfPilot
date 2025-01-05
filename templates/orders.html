@@ -1,0 +1,284 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+<div class="row">
+    <!-- Linke Seite -->
+    <div class="col-md-6">
+        <div class="bg-dark text-white p-3 rounded mb-3">
+            <h3 class="fw-bold text-start mb-4">Aufträge offen</h3>
+                
+                <!-- Button “Alle” -->
+                <button class="btn btn-light py-1" id="allOpenBtn"> Alle </button>
+
+                <!-- Button “Einlagerungen” -->
+               <button class="btn btn-light py-1" id="openIncomingBtn"> Einlagerungen </button>
+
+                <!-- Button “Auslagerungen” -->
+                <button class="btn btn-light py-1" id="openOutgoingBtn"> Auslagerungen </button>
+
+            <div class="table-responsive w-auto mx-auto mt-3">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Autonumber</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Type</th>
+                            <th>Arrived On</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="openOrderBody">
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.createNumber }}</td>
+                            <td>{{ order.customer }}</td>
+                            <td>{{ order.product.name }}</td>
+                            <td>{{ order.type }}</td>
+                            <td>{{ order.arrived_on }}</td>
+                            <td>{{ order.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Rechte Seite -->
+    <div class="col-md-6">
+        <div class="container bg-dark text-white p-3 rounded mb-3">
+            <h3 class="fw-bold text-start mb-4">Aufträge abgeschlossen</h3>
+
+                <!-- Button “Alle” -->
+                <button class="btn btn-light py-1" id="allCloseBtn"> Alle </button>
+        
+                <!-- Button “Einlagerungen” -->
+               <button class="btn btn-light py-1" id="closeIncomingBtn"> Einlagerungen </button>
+
+               <!-- Button “Auslagerungen” -->
+               <button class="btn btn-light py-1" id="closeOutgoingBtn"> Auslagerungen </button>
+
+            <div class="table-responsive w-auto mx-auto mt-3">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Autonumber</th>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Type</th>
+                            <th>Arrived On</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="closeOrderBody">
+                        {% for order in closedOrders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.createNumber }}</td>
+                            <td>{{ order.customer }}</td>
+                            <td>{{ order.product.name }}</td>
+                            <td>{{ order.type }}</td>
+                            <td>{{ order.arrived_on }}</td>
+                            <td>{{ order.status }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    function loadAllOpen() {
+        $.ajax({
+            url: '{% url "orders_json" %}',
+            method: 'GET',
+            success: function(data){
+                let rowsHtml = '';
+                data.orders.forEach(function(order) {
+                    rowsHtml += `
+                    <tr>
+                        <td>${ order.id }</td>
+                        <td>${ order.create_number }</td>
+                        <td>${ order.customer }</td>
+                        <td>${ order.product_name }</td>
+                        <td>${ order.type }</td>
+                        <td>${ order.arrived_on }</td>
+                        <td>${ order.status }</td>
+                    </tr>
+                    `;
+                });
+                $('#openOrderBody').html(rowsHtml);
+            },
+            error: function(err){
+                console.error('Fehler beim Laden der Aufträge:', err);
+            }
+        });
+    }
+    $('#allOpenBtn').click(loadAllOpen);
+
+
+    function loadOpenIncoming() {
+        $.ajax({
+            url: '{% url "incoming_json" %}',
+            method: 'GET',
+            success: function(data){
+                let rowsHtml = '';
+                data.orders.forEach(function(order) {
+                    rowsHtml += `
+                    <tr>
+                        <td>${ order.id }</td>
+                        <td>${ order.create_number }</td>
+                        <td>${ order.customer }</td>
+                        <td>${ order.product_name }</td>
+                        <td>${ order.type }</td>
+                        <td>${ order.arrived_on }</td>
+                        <td>${ order.status }</td>
+                    </tr>
+                    `;
+                });
+                $('#openOrderBody').html(rowsHtml);
+            },
+            error: function(err){
+                console.error('Fehler beim Laden der Aufträge:', err);
+            }
+        });
+    }
+    $('#openIncomingBtn').click(loadOpenIncoming);
+
+
+
+
+    function loadOpenOutgoing() {
+        $.ajax({
+            url: '{% url "outgoing_json" %}',
+            method: 'GET',
+            success: function(data){
+                let rowsHtml = '';
+                data.orders.forEach(function(order) {
+                    rowsHtml += `
+                    <tr>
+                        <td>${ order.id }</td>
+                        <td>${ order.create_number }</td>
+                        <td>${ order.customer }</td>
+                        <td>${ order.product_name }</td>
+                        <td>${ order.type }</td>
+                        <td>${ order.arrived_on }</td>
+                        <td>${ order.status }</td>
+                    </tr>
+                    `;
+                });
+                $('#openOrderBody').html(rowsHtml);
+            },
+            error: function(err){
+                console.error('Fehler beim Laden der Aufträge:', err);
+            }
+        });
+    }
+    $('#openOutgoingBtn').click(loadOpenOutgoing);
+
+
+
+
+
+    function loadAllClose() {
+        $.ajax({
+            url: '{% url "orders_json" %}',
+            method: 'GET',
+            success: function(data){
+                let rowsHtml = '';
+                data.closed_orders.forEach(function(order) {
+                    rowsHtml += `
+                    <tr>
+                        <td>${ order.id }</td>
+                        <td>${ order.create_number }</td>
+                        <td>${ order.customer }</td>
+                        <td>${ order.product_name }</td>
+                        <td>${ order.type }</td>
+                        <td>${ order.arrived_on }</td>
+                        <td>${ order.status }</td>
+                    </tr>
+                    `;
+                });
+                $('#closeOrderBody').html(rowsHtml);
+            },
+            error: function(err){
+                console.error('Fehler beim Laden der Aufträge:', err);
+            }
+        });
+    }
+    $('#allCloseBtn').click(loadAllClose);
+
+
+
+    function loadCloseIncoming() {
+        $.ajax({
+            url: '{% url "incoming_json" %}',
+            method: 'GET',
+            success: function(data){
+                let rowsHtml = '';
+                data.closed_orders.forEach(function(order) {
+                    rowsHtml += `
+                    <tr>
+                        <td>${ order.id }</td>
+                        <td>${ order.create_number }</td>
+                        <td>${ order.customer }</td>
+                        <td>${ order.product_name }</td>
+                        <td>${ order.type }</td>
+                        <td>${ order.arrived_on }</td>
+                        <td>${ order.status }</td>
+                    </tr>
+                    `;
+                });
+                $('#closeOrderBody').html(rowsHtml);
+            },
+            error: function(err){
+                console.error('Fehler beim Laden der Aufträge:', err);
+            }
+        });
+    }
+    $('#closeIncomingBtn').click(loadCloseIncoming);
+
+
+
+    function loadCloseOutgoing() {
+        $.ajax({
+            url: '{% url "outgoing_json" %}',
+            method: 'GET',
+            success: function(data){
+                let rowsHtml = '';
+                data.closed_orders.forEach(function(order) {
+                    rowsHtml += `
+                    <tr>
+                        <td>${ order.id }</td>
+                        <td>${ order.create_number }</td>
+                        <td>${ order.customer }</td>
+                        <td>${ order.product_name }</td>
+                        <td>${ order.type }</td>
+                        <td>${ order.arrived_on }</td>
+                        <td>${ order.status }</td>
+                    </tr>
+                    `;
+                });
+                $('#closeOrderBody').html(rowsHtml);
+            },
+            error: function(err){
+                console.error('Fehler beim Laden der Aufträge:', err);
+            }
+        });
+    }
+    $('#closeOutgoingBtn').click(loadCloseOutgoing);
+
+</script>
+
+
+{% endblock %}

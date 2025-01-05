@@ -1,0 +1,55 @@
+{% extends "master.html" %}
+
+{% block content %}
+    <div class="row mb-3 text-start">
+        <div class="col-md-4">
+            <div class="bg-dark text-white p-3 rounded mb-3">
+                <p class="fs-5">Eingehende Ware</p>
+                <p class="fs-6 m-3">Anzahl Einlagerungen heute {{ closedOrdersInToday|length }}</p>
+                <p class="fs-6 m-3">Anzahl offener Aufträge {{ openOrdersIn|length }}</p>
+                <p class="fs-5">Ausgehende Ware</p>
+                <p class="fs-6 m-3">Anzahl Auslagerungen heute {{ closedOrdersOutToday|length }}</p>
+                <p class="fs-6 m-3">Anzahl offener Aufträge {{ openOrdersOut|length }}</p>
+                <p class="fs-6 m-3">Lieferbereitschaftsgrad</p>
+                <div class="bg-black p-3 text-white rounded mb-3">
+                    <p class="fs-5">Warentypen: </p>
+                    {% if sortedProducts and sortedProducts|length > 0 %}
+                        <p class="fs-6 m-3">Top 1 {{ sortedProducts.0 }}</p>
+                    {% endif %}
+                    {% if sortedProducts and sortedProducts|length > 1 %}
+                        <p class="fs-6 m-3">Top 2 {{ sortedProducts.1 }}</p>
+                    {% endif %}
+                    {% if sortedProducts and sortedProducts|length > 2 %}
+                        <p class="fs-6 m-3">Top 3 {{ sortedProducts.2 }}</p>
+                    {% endif %}
+                </div>   
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="container bg-dark text-white p-3 rounded mb-3">
+                <p id="datetime" class="fs-5 m-0"></p>
+            </div>
+            <script>
+                function updateDateTime() {
+                    const now = new Date();
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    const formattedDate = now.toLocaleDateString('de-DE', options);
+                    const formattedTime = now.toLocaleTimeString('de-DE');
+                    
+                    document.getElementById('datetime').textContent = `${formattedDate}, ${formattedTime}`;
+                }
+                updateDateTime(); // Call initially
+                setInterval(updateDateTime, 1000); // Update every second
+            </script>
+            
+            <div class="container bg-dark text-white p-3 rounded mb-3">
+                <a href="{% url 'overview' %}" class="text-decoration-none text-white">Lagerübersicht</a>
+            </div>
+
+        </div>
+        <div class="col-md-2">
+            {% include "ordersByPriority.html" %}
+        </div>
+    </div>
+{% endblock %}

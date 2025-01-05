@@ -1,0 +1,53 @@
+{% extends "master.html" %}
+
+{% block content %}
+    <h2>Historische Daten</h2>
+    
+    <h3> Stapler quick data </h3>
+    <p> Distanz: {{ stacker.distance }} </p>
+    <p> Leerdistanz: {{ stacker.emptyDistance }} </p>
+    <p> Material: {{ stacker.material_load }}/{{ parameter.material_durability }}</p>
+    <p> Status: {{ stacker.status }} </p>
+
+    <h3> Lagerdaten </h3>
+    <p> Durchschnittliche Lagerauslastung: {{ averageCapacity }} </p> 
+    <p> Durchschnittliche freie Plätze: {{ averageRestCapacity }} </p>
+    <p> gesamte Einlagerungen: {{ totalOrdersIn }} </p>
+    <p> gesamte Auslagerungen: {{ totalOrdersOut }} </p>
+    <p> Durchschnittliche Einlagerungen pro Tag: {{ averageOrdersInPerDay }} </p>
+    <p> Durchschnittliche Auslagerungen pro Tag: {{ averageOrdersOutPerDay }} </p>
+    <p> Durchschnittliche Durchlaufzeit: {{ averageLeadTime }} </p> <!-- (Zeit Einlagerung + Zeit Auslagerung) / 2-->
+    <p> Durchschnittlicher Lieferbereitschaftsgrad: </p> <!-- Pünktliche Auslagerungen -->
+    <p> Durchschnittlicher Umschlagsgrad: {{ averageTurnoverRatio }} </p> <!-- (Eingelagerte und anschließend ausgelagerte Artikel) / (durchschnittliche Lagerauslastung) -->
+
+    <h3> Staplerdaten </h3>
+    <p> Gesamtfahrten: {{ toursNum }}</p>
+    <p> Gesamte Leerfahrten: {{ emptyTours}} </p> <!-- Boolean Empty Attribut einer Tour einbauen-->
+    <p> Gesamtweg: {{ distance }} </p>
+    <p> Gesamter Leerweg: {{ emptyDistance }} </p>
+    <p> Gesamte Zeit: {{ time }} </p>
+    <p> Gesamte Leerzeit: {{ emptyTime }} </p> 
+    <!-- Alle davon auch pro Tag berechnen / angeben -->
+    <p> Effizienz Fahrten: {{ efficiencyTour }} </p>
+    <p> Effizienz Weg: {{ efficiencyDistance }} </p>
+    <p> Effizienz Zeit: {{ efficiencyTime }} </p>
+
+    <div class="bg-black p-3 text-white rounded mb-3">
+        <p class="fs-5">Warentypen: </p>
+        {% if topProducts and topProducts|length > 0 %}
+            <p class="fs-6 m-3">Top 1 {{ topProducts.0 }}</p>
+        {% endif %}
+        {% if topProducts and topProducts|length > 1 %}
+            <p class="fs-6 m-3">Top 2 {{ topProducts.1 }}</p>
+        {% endif %}
+        {% if topProducts and topProducts|length > 2 %}
+            <p class="fs-6 m-3">Top 3 {{ topProducts.2 }}</p>
+        {% endif %}
+    </div> 
+
+    <h3> Alle Touren des Staplers: </h3>
+    {% for tour in tours %}
+    <p> {{ tour.date }}: Dintanz: {{ tour.distance }} Leer: {{ tour.empty_distance}} Zeit: {{ tour.time}} Leer: {{ tour.empty_time }} Material: {{ tour.material_load }}. Von ({{tour.x1}},{{tour.y1}}) nach ({{tour.x2}},{{tour.y2}})</p>
+    {% endfor %}
+
+{% endblock %}

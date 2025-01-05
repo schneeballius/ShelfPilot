@@ -1,0 +1,400 @@
+{% extends "master.html" %}
+
+{% block content %}
+  <!-- 1) BOX: Lagerübersicht -->
+  <h4 class="fw-bold"> Lagerauslastung </h4>
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" style="width: {{ capacityRatio }}%" aria-valuenow="{{ capacityRatio }}" aria-valuemin="0" aria-valuemax="100">{{ currentCapacity }}</div>
+  </div>
+  <br>
+
+  <div class="row">
+  <div class="col-md-2">
+    {% include "ordersByPriority.html" %}
+  </div>
+
+  <div class="col-md-10">
+  <div class="bg-dark text-white p-3 rounded mb-3">
+    <h3 class="fw-bold text-start mb-4">Lagerübersicht
+      {% if stacker.status == "Überlastet" %}
+        Fehler: Auftrag würde Stapler überlasten!
+      {% elif stacker.status == "Hinweis_Wartung" %}
+        Achtung: Staplermaterial zu mindestens 95% ausgelastet!
+      {% endif %}
+    </h3>
+    
+    <!-- Grid mit den Storage-Elementen -->
+    <div class="grid-container">
+      {% for storage in storages %}
+        {% if storage.number != -100 and storage.number != 100 and storage.number >= 10 %}
+          
+        {% if storage == stacker.storage %}
+          <div class="grid-item" id="stacker"
+            data-product-name="{{ storage.product.name }}" 
+            data-product-id="{{ storage.product.id }}"
+            data-product-category="{{ storage.product.category.name }}"
+            data-product-weight="{{ storage.product.weight }}"
+            data-product-stored_on="{{ storage.product.stored_on }}">
+            <p class="fw-bold m-0">{{ storage.product.name }}</p>
+          </div>
+        {% else %}
+          <div class="grid-item" id="productExists1" 
+            data-product-name="{{ storage.product.name }}" 
+            data-product-id="{{ storage.product.id }}"
+            data-product-category="{{ storage.product.category.name }}"
+            data-product-weight="{{ storage.product.weight }}"
+            data-product-stored_on="{{ storage.product.stored_on }}">
+            <p>{{ storage.product.name }}</p>
+          </div>
+        {% endif %}
+
+        {% endif %}
+      {% endfor %}
+    </div>
+    
+    <div class="grid-container" id="lastRow">
+      {% if stacker.storage.number == -100 %}
+        <div class="grid-item" id="stacker">
+          <p>Wareneingang</p>
+        </div>
+      {% else %}
+        <div class="grid-item" id="greenHouse">
+          <p>Wareneingang</p>
+        </div>
+      {% endif %}
+
+      {% for storage in storages %}
+        {% if storage.number != -100 and storage.number != 100 and storage.number < 10 %}
+          {% if storage == stacker.storage %}
+              <div class="grid-item" id="stacker" 
+              data-product-name="{{ storage.product.name }}" 
+              data-product-id="{{ storage.product.id }}"
+              data-product-category="{{ storage.product.category.name }}"
+              data-product-weight="{{ storage.product.weight }}"
+              data-product-stored_on="{{ storage.product.stored_on }}">
+              <p>{{ storage.product.name }}</p>
+            </div>
+
+          {% else %}
+            <div class="grid-item" id="productExists" 
+              data-product-name="{{ storage.product.name }}" 
+              data-product-id="{{ storage.product.id }}"
+              data-product-category="{{ storage.product.category.name }}"
+              data-product-weight="{{ storage.product.weight }}"
+              data-product-stored_on="{{ storage.product.stored_on }}">
+              <p>{{ storage.product.name }}</p>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      {% if  stacker.storage.number == 100 %}
+        <div class="grid-item" id="stacker">
+          <p>Warenausgang</p>
+        </div>
+      {% else %}
+        <div class="grid-item" id="redHouse">
+          <p>Warenausgang</p>
+        </div>
+      {% endif %}
+    </div>
+  </div> <!-- Ende BOX: Lagerübersicht -->
+  </div> <!-- Ende BOX: Lagerübersicht außen (rechts neben Aufträge nach Priorität)-->
+  </div> <!-- Ende ROW zur Orientierung von Aufträge nach Prio und Lagerübersicht, schöner machen noch, evtl sidebar für Aufträge?-->
+
+  <!-- Modal -->
+  <div class="modal" id="productModal" tabindex="-1" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-white" style="border: 4px solid #fff;">
+        
+        <!-- Header -->
+        <div class="modal-header">
+          <!-- Schließen-Icon -->
+          <span class="close text-white fs-4" id="closeModal" style="cursor: pointer;">
+            &times;
+          </span>
+          <!-- Produktname als Modal-Titel -->
+          <h5 class="modal-title ms-3" id="modalProductName"></h5>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body">
+          <p id="modalProductCategory" class="mb-1"></p>
+          <p id="modalProductStoredOn" class="mb-1"></p>
+          <p id="modalProductWeight" class="mb-1"></p>
+          <p id="modalProductInfo" class="mb-0"></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer">
+          <button class="btn btn-danger p-2" id="removeProductBtn">
+            Auslagern
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<div class="row">
+  <div class="col-md-6">
+    <!-- 3) BOX: Aufträge -->
+    <div class="bg-dark text-white p-3 rounded mb-3">
+      <h3 class="fw-bold text-start mb-4">Aufträge</h3>
+      {% for order in orders %}
+        <p class="m-0">
+          <!-- Nummer -->
+          <span class="fw-bold">{{ order.createNumber }}</span>
+          <!-- Typ + Produkt -->
+          ({{ order.type }}: {{ order.product.name }}{{ order.product.id }})
+          <!-- Link zum Abarbeiten -->
+          <a class="link-body-emphasis text-decoration-none"
+            href="{% url 'serveOrder' order.id %}">
+            <span style="color: rgb(125, 255, 125);"> Auftrag abarbeiten</span>
+          </a>
+          <a class="link-body-emphasis text-decoration-none text-white" 
+            href="{% url 'deleteOrder' order.id %}">
+            <span style="color: rgb(255, 122, 122);"> Auftrag löschen</span>
+          </a>
+        </p>
+      {% endfor %}
+    </div>
+
+
+    <!-- 6) BOX: Zuletzt ausgelagerte Waren -->
+    <div class="bg-dark text-white p-3 rounded mb-3">
+      <h3 class="fw-bold text-start mb-4">Zuletzt ausgelagerte Waren</h3>
+      {% for order in closedOrders %}
+        <p class="m-0">
+          {{ order.product.name }}{{ order.product.id }} 
+          ({{ order.createNumber }})
+        </p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-md-6">
+  <!-- 4) BOX: Neuen Auftrag erstellen -->
+  <div class="bg-dark text-white p-3 rounded mb-3">
+    <h3 class="fw-bold text-start mb-4">Neuen Auftrag erstellen</h3>
+
+    <div class="mb-3">
+      <label for="type" class="form-label">Typ:</label>
+      <select name="type" id="type"class="form-select">
+        <option value="store" selected >Einlagerung</option>
+        <option value="discard">Auslagerung</option>
+      </select>
+    </div>
+
+    <div id="storeFields" style="display:none;">
+      <form method="post" action="{% url 'addInOrder' %}">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <label for="order_customer" class="form-label">Kunde:</label>
+          <input required type="text" class="form-control" id="order_customer" name="order_customer">
+        </div>
+      
+        <div class="mb-3">
+          <label for="category" class="form-label">Kategorie:</label>
+          <select name="category" id="category" class="form-select">
+            {% for category in categories %}
+              <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="product_name" class="form-label">Artikelname:</label>
+          <input required type="text" class="form-control" id="product_name" name="product_name">
+        </div>
+
+        <div class="mb-3">
+          <label for="product_weight" class="form-label">Artikelgewicht (in kg):</label>
+          <input required type="number" class="form-control" id="product_weight" name="product_weight">
+        </div>
+
+        <button type="submit" class="btn btn-success p-2"> Einlagerungsauftrag erstellen </button>
+      </form>
+    </div>
+
+    <div id="discardFields" style="display:none;">
+      <form method="post" action="{% url 'addOutOrder' %}">
+      {% csrf_token %}
+
+        <div class="mb-3">
+          <label for="out_order_customer" class="form-label">Kunde:</label>
+          <input required type="text" class="form-control" id="out_order_customer" name="out_order_customer">
+        </div>
+
+        <div class="mb-3">
+          <label for="product" class="form-label">Artikel:</label>
+          <select name="product" id="product" class="form-select">
+            {% for product in storingProducts %}
+              <option value="{{ product.id }}">{{ product.name }} {{ product.id }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-danger p-2"> Auslagerungsauftrag erstellen </button>
+      </form>    
+    </div>
+  </div>
+  
+
+    <!-- 5) ICON: Rotes Haus (ohne extra Box) 
+    <div class="mb-3">
+      <a href="{% url 'redHouse' %}"
+        style="text-decoration: none; color: red; display: inline-block; padding: 8px;">
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="40" 
+          height="40" 
+          fill="currentColor"
+          style="color: red; cursor: pointer;" 
+          class="bi bi-house-fill"
+          viewBox="0 0 16 16"
+        >
+          <path d="M8.707 1.5a1 1 0 0 
+                  0-1.414 0L.646
+                  8.146a.5.5 0 0 
+                  0 .708.708L8 
+                  2.207l6.646 
+                  6.647a.5.5 0 0 
+                  0 .708-.708L13 
+                  5.793V2.5a.5.5 
+                  0 0 0-.5-.5h-1a.5.5 
+                  0 0 0-.5.5v1.293z"/>
+          <path d="m8 3.293 6 6V13.5a1.5 1.5 
+                  0 0 1-1.5 1.5h-9A1.5 1.5 
+                  0 0 1 2 13.5V9.293z"/>
+        </svg>
+      </a>
+    </div> -->
+
+    <style>
+      .grid-container, #lastRow {
+          display: grid;
+          grid-gap: 10px;
+          margin-top: 20px;
+          width: 83.3%;
+          margin-left: 8.35% 
+      }
+  
+      .grid-container {
+          grid-template-columns: repeat(10, 1fr); /* 10 Spalten */
+      }
+  
+      #lastRow {
+          grid-template-columns: repeat(12, 1fr); /* 12 Spalten */
+          width: 100%;
+          margin-left: 0% 
+      }
+      
+      .grid-item {
+          background-color: rgb(65, 62, 62); /* Graue Box */
+          border: 1px solid #999;
+          padding: 10px;
+          text-align: center;
+      }
+
+      .modal { /* Abdunkeln des Bildschirms während PopUps*/
+        background-color: rgba(0, 0, 0, 0.6); /* dunkler Overlay */
+        position: fixed;
+        top: 0; 
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+      }
+
+      #stacker {
+        background-color:rgb(82, 129, 146) ;  /* Graue Box */
+        background-text: "Stapler";
+        box-shadow: inset 0 0 0 5px black;
+      }
+
+      #greenHouse {
+        background-color:rgb(94, 146, 75);
+      }
+
+      #redHouse {
+        background-color:rgb(240, 78, 78);
+      }
+    </style>
+
+    <script>
+      function updateFields(){
+        const typeSelect=document.getElementById('type');
+        const storeFields=document.getElementById('storeFields');
+        const discardFields=document.getElementById('discardFields');
+
+        const selectedValue = typeSelect.value;
+
+        if(selectedValue === 'store'){
+          storeFields.style.display='block';
+          discardFields.style.display='none';
+        }
+        else if(selectedValue === 'discard'){
+          storeFields.style.display='none';
+          discardFields.style.display='block';
+        }
+        else{
+          storeFields.style.display='none';
+          discardFields.style.display='none';
+        }
+      }
+      document.getElementById('type').addEventListener('change',updateFields);
+      document.addEventListener('DOMContentLoaded',updateFields);
+
+      // POP UP für Artikel
+
+      document.addEventListener('DOMContentLoaded',function(){
+        const gridItems = document.querySelectorAll('#productExists, #productExists1, #stacker');
+
+        gridItems.forEach(function(gridItem) {
+          // Datenattribute (z.B. Produktname und ID) für jedes Element
+          const productName = gridItem.getAttribute('data-product-name');
+          const productCategory = gridItem.getAttribute('data-product-category');
+          const productStoredOn = gridItem.getAttribute('data-product-stored_on');
+          const productWeight = gridItem.getAttribute('data-product-weight');
+          const productId = gridItem.getAttribute('data-product-id');
+  
+          // Event Listener für den Klick auf das grid-item
+          gridItem.addEventListener('click', function() {
+              if (productName) {
+                  // Modal-Inhalte setzen
+                  document.getElementById('modalProductName').innerText = productName;
+                  document.getElementById('modalProductCategory').innerText = 'Kategorie: ' + productCategory;
+                  document.getElementById('modalProductStoredOn').innerText = 'Eingelagert am: ' + productStoredOn;
+                  document.getElementById('modalProductWeight').innerText = 'Gewicht: ' + productWeight;
+                  document.getElementById('modalProductInfo').innerText = 'ID: ' + productId;
+
+                  const removeProductBtn = document.getElementById('removeProductBtn');
+                  removeProductBtn.setAttribute('data-product-id', productId);
+
+                  // Modal anzeigen
+                  document.getElementById('productModal').style.display = "block";
+              }
+          });
+      });
+
+        document.getElementById('closeModal').addEventListener('click', function() {
+          document.getElementById('productModal').style.display = "none";
+        });
+
+        window.addEventListener('click', function(event) {
+          if (event.target === document.getElementById('productModal')) {
+              document.getElementById('productModal').style.display = "none";
+          }
+        });
+        
+        // Event listener for the remove product button
+        document.getElementById('removeProductBtn').addEventListener('click', function() {
+          const productId = this.getAttribute('data-product-id');  // Get the product ID from the button
+          const url = `/removeProduct/${productId}/`;  // Correctly construct the URL using the product ID
+          window.location.href = url;  // Redirect the user to the constructed URL
+        });
+      });
+    </script>
+{% endblock %}

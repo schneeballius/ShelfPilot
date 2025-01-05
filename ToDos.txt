@@ -1,0 +1,32 @@
+Orders.html:
+ - ajax Anfragen für die Buttons verwenden -> dynamisches Klicken ermöglicht von alle, einlagerungen, auslagerungen
+
+Models.py
+- default Werte für alle Felder setzen? Gibt teilweise beim Migrieren Fehler diesbezüglich
+
+Navbar
+- wenn man auf ShelfPilot Logo klickt sollte etwas passieren?
+
+Historische Daten
+- Testdatensatz manuell erstellen?
+- Lieferbereitschaftsgrad berechnen
+- Wie berechnen wie durchschnittliche Lagerauslastung?? Habe jetzt pro Tag wieviele Produkte an diesem Tag storing=True haben
+- Welche Parameter wollen wir bei der Simulation anzeigen?
+
+Übergreifend
+- AJAX Anfragen für Buttons verwenden, gerade bei der Lagerübersicht aktuell von großer Bedeutung
+- Fehlermeldungen / Sicherheitsnetze im Code falls keine Daten existieren (Dummy löschen klicken und durch NavBar navigieren zum Test)
+
+Dashboard + Lagerübersicht
+- "Aufträge nach Priorität" Feld als Sidedrawer machen? Der könnte sonst auch in den Master und immer verfügbar sein. bzw. in
+passenden Modulen verfügbar sein
+- Top 3 Waren: Wie soll es sich verhalten? Top 3 der gesamten Artikel (aus offenen und abgeschlossenen Aufträgen) oder von 
+nur bereits gelagerten Artikeln
+Auf Dashboard: Nur von heute??
+
+Products:
+- stored_on attribut ist fast überflüssig, kann man aus related_order.get(type="Einlagerung") holen ?
+- Überflüssig nicht so sehr, aber man kann es als DateField machen. Ich denke Datetime ist überflüssig ?
+
+Stacker:
+- flag für Simulation? Aktuell kann es zu fehlern führen weil man den Hauptstacker über get aufruft und annimmt es gibt nur einlagerungen

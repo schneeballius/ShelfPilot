@@ -1,0 +1,14 @@
+<div class="bg-dark text-white p-3 rounded">
+    <p class="fs-5">Aufträge nach Prio</p>
+    <ul class="list-group list-group-flush">
+        {% for order in openOrders %}
+        <li class="list-group-item bg-dark text-white">{{ order.createNumber }}
+            {% if order.priority == None %}
+                (unsorted)
+            {% else %}
+                ({{ order.priority }})
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>

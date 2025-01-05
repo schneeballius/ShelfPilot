@@ -1,0 +1,243 @@
+{% extends "master.html" %}
+
+{% block content %}
+
+<h3 class="fw-bold text-start mb-4">Einstellungen</h3>
+<!-- Löschen-Button (dunkelrot) -->
+<button class="btn btn-danger p-2" id="deleteDummyBtn" style="background-color: darkred; border-color: darkred;">
+  Dummy löschen
+</button>
+<!-- Erstellen-Button (dunkelgrün) -->
+<button class="btn btn-success p-2" id="createDummyBtn" style="background-color: darkgreen; border-color: darkgreen;">
+  Dummy erstellen
+</button>
+
+
+{% if editable %}
+  <!-- Wenn editable=True: Formularfelder zeigen. -->
+  <form method="post" action="{% url 'saveSettings' %}">
+    {% csrf_token %}
+
+    <div class="row mt-4">
+      <!-- Linke Seite -->
+      <div class="col-md-6">
+        <div class="bg-dark text-white p-3 rounded mb-3">
+          <h3 class="fw-bold text-start mb-4">Staplerparameter</h3>
+
+          <!-- Fahrzeit Vertikal -->
+          <div class="mb-3">
+            <label for="vertical_speed" class="form-label">
+              Fahrzeit Vertikal
+            </label>
+            <input
+            required
+              type="number"
+              class="form-control"
+              id="vertical_speed"
+              name="vertical_speed"
+              value="{{ parameter.vertical_speed }}"
+            >
+          </div>
+
+          <!-- Fahrzeit Horizontal -->
+          <div class="mb-3">
+            <label for="horizontal_speed" class="form-label">
+              Fahrzeit Horizontal
+            </label>
+            <input
+            required
+              type="number"
+              class="form-control"
+              id="horizontal_speed"
+              name="horizontal_speed"
+              value="{{ parameter.horizontal_speed }}"
+            >
+          </div>
+
+          <!-- Lebensdauer Material -->
+          <div class="mb-3">
+            <label for="material_durability" class="form-label">
+              Lebensdauer Material (kg*m)
+            </label>
+            <input
+            required
+              type="number"
+              class="form-control"
+              id="material_durability"
+              name="material_durability"
+              value="{{ parameter.material_durability }}"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Rechte Seite -->
+      <div class="col-md-6">
+        <div class="container bg-dark text-white p-3 rounded mb-3">
+          <h3 class="fw-bold text-start mb-4">Warenparameter</h3>
+
+          <!-- Gewichtskontrolle -->
+          <div class="my-4">
+            <div class="form-check form-switch mb-4">
+              <!-- Hidden Field-->
+              <input type="hidden" name="weight_control" value="False">  
+              <!-- Actual Toggle -->
+              <input
+                class="form-check-input bg-success border-success"
+                type="checkbox"
+                id="weight_control"
+                name="weight_control"
+                value="True"
+                {% if parameter.weight_control %} checked {% endif %}
+              >
+              <label for="weight_control" class="form-label d-block">
+                Gewichtskontrolle
+              </label>
+            </div>
+          </div>
+
+          <!-- CSS für Farbanpassung bei An Grün / Aus Grau -->
+          <style>
+              .form-check-input {
+              background-color: grey !important;
+              border-color: grey !important;
+              transition: background-color 0.3s, border-color 0.3s;
+            }
+
+            .form-check-input:checked {
+              background-color: green !important;
+              border-color: green !important;
+            }
+          </style>
+
+          <!-- Gewichtskontrolle ab Gewicht -->
+          <div class="mb-3">
+            <label for="weight_control_value" class="form-label">
+              Gewichtskontrolle ab Gewicht
+            </label>
+            <input
+              required
+              type="number"
+              class="form-control"
+              id="weight_control_value"
+              name="weight_control_value"
+              value="{{ parameter.weight_control_value }}"
+            >
+          </div>
+
+          <!-- Gewichtskontrolle ab Etage -->
+          <div class="mb-3">
+            <label for="weight_control_from_story" class="form-label">
+              Gewichtskontrolle ab Etage
+            </label>
+            <input
+              required
+              type="number"
+              class="form-control"
+              id="weight_control_from_story"
+              name="weight_control_from_story"
+              value="{{ parameter.weight_control_from_story }}"
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kleiner, links ausgerichteter Speichern-Button -->
+    <div class="text-start">
+      <button class="btn btn-dark btn-sm p-2" type="submit">
+        Parameter speichern
+      </button>
+    </div>
+  </form>
+
+{% else %}
+  <!-- Wenn editable=False: nur Werte ausgeben. -->
+  <a class="btn btn-dark p-2" href="{% url 'editSettings' %}">
+    Parameter bearbeiten
+  </a>
+
+  <div class="row mt-4">
+    <!-- Linke Seite -->
+    <div class="col-md-6">
+      <div class="bg-dark text-white p-3 rounded mb-3">
+        <h3 class="fw-bold text-start mb-4">Staplerparameter</h3>
+        <p class="fw-bold">Fahrzeit Vertikal:</p>
+        <p>{{ parameter.vertical_speed }}</p>
+
+        <p class="fw-bold">Fahrzeit Horizontal:</p>
+        <p>{{ parameter.horizontal_speed }}</p>
+
+        <p class="fw-bold">Lebensdauer Material:</p>
+        <p>{{ parameter.material_durability }} kg*m</p>
+      </div>
+    </div>
+
+    <!-- Rechte Seite -->
+    <div class="col-md-6">
+      <div class="container bg-dark text-white p-3 rounded mb-3">
+        <h3 class="fw-bold text-start mb-4">Warenparameter</h3>
+        <p class="fw-bold">Gewichtskontrolle:</p>
+        <p>{{ parameter.weight_control }}</p>
+
+        <p class="fw-bold">Gewichtskontrolle ab Gewicht:</p>
+        <p>{{ parameter.weight_control_value }}</p>
+
+        <p class="fw-bold">Gewichtskontrolle ab Etage:</p>
+        <p>{{ parameter.weight_control_from_story }}</p>
+      </div>
+    </div>
+  </div>
+
+{% endif %}
+
+<!-- AJAX-Calls für Delete-/CreateDummy -->
+<script>
+  
+  if (typeof $ === 'undefined') {
+    console.error("jQuery ist nicht verfügbar.");
+  } else {
+    console.log("jQuery ist verfügbar.");
+  }
+
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  $('#deleteDummyBtn').on('click', function() {
+    event.preventDefault(); // Standardverhalten verhindern
+    $.ajax({
+      url: '{% url "deleteDummy" %}',
+      method: 'POST',
+      headers: { 'X-CSRFToken': csrftoken },
+      data: {},
+      success: function(data) {
+        console.log('Erfolg beim Löschen:', data);
+        if (data.success && data.redirect_url) {
+          window.location.href = data.redirect_url;
+        }
+      },
+      error: function(error) {
+        console.error('Fehler:', error);
+      }
+    });
+  });
+
+  $('#createDummyBtn').on('click', function() {
+    event.preventDefault(); // Standardverhalten verhindern
+    $.ajax({
+      url: '{% url "createDummy" %}',
+      method: 'POST',
+      headers: { 'X-CSRFToken': csrftoken },
+      data: {},
+      success: function(data) {
+        console.log('Erfolg beim Erstellen:', data);
+        if (data.success && data.redirect_url) {
+          window.location.href = data.redirect_url;
+        }
+      },
+      error: function(error) {
+        console.error('Fehler:', error);
+      }
+    });
+  });
+</script>
+{% endblock %}
