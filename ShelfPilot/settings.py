@@ -123,15 +123,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 STATIC_URL = '/static/'
-# Development Standard: Django automatically searches in /static/ of the App + STATICFILES_DIRS
+
+# Falls du STATICFILES_DIRS ebenfalls verwendest
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / 'static',  # Hier sind die zusätzlichen statischen Dateien, die Django suchen soll
 ]
+
+# Sammeln der statischen Dateien in diesem Ordner für den Produktionsmodus
+STATIC_ROOT = BASE_DIR / 'staticfiles'
