@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
+
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-5dl6w(hzv%djs1q3&un)h#-ag#u@hpv%!ud-!*88#yk&=)+*$-"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -77,15 +79,19 @@ WSGI_APPLICATION = "ShelfPilot.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('db_name_wp0v'),
-        'USER': os.environ.get('db_name_wp0v_user'),
-        'PASSWORD': os.environ.get('lpQ8B6IhKmvkwJ3gBDALWqsUxxknFlQZ'),
-        'HOST': os.environ.get('dpg-ctta0qogph6c738h508g-a'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
-    }
+#DATABASES = {
+ #   'default': {
+  #      'ENGINE': 'django.db.backends.postgresql',
+   #     'NAME': ('meinedatenbank'),
+    #    'USER': ('user'),
+     #   'PASSWORD': ('password'),
+      #  'HOST': ('localhost'),
+       # 'PORT': ('5432'),
+    #}
+#}
+
+DATABASES ={
+    "default":dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
 
@@ -129,6 +135,7 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 # Falls du STATICFILES_DIRS ebenfalls verwendest
 STATICFILES_DIRS = [
